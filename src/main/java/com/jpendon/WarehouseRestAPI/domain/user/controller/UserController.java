@@ -26,7 +26,7 @@ public class UserController {
 		
 	}
 	
-	@GetMapping("")
+	@GetMapping("/")
 	public List<User> getAllUsers() {
 		return userService.findAll();
 	}
@@ -55,5 +55,13 @@ public class UserController {
 		userService.deleteById(userId);
 		
 		return "Successfully deleted id - " + userId;
+	}
+	
+	@DeleteMapping("/")
+	public String delete(@RequestBody User user) {
+		userService.delete(user);
+		
+		return "Successfully deleted:\n" + user;
+
 	}
 }
