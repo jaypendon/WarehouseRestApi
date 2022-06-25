@@ -1,5 +1,7 @@
 package com.jpendon.WarehouseRestAPI.domain.order.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.jpendon.WarehouseRestAPI.domain.order.dto.OrderResponse;
 import com.jpendon.WarehouseRestAPI.domain.order.model.Order;
 import com.jpendon.WarehouseRestAPI.domain.order.service.IOrderService;
+import com.jpendon.WarehouseRestAPI.domain.product.dto.ProductSaleRequest;
 
 @RestController
 @RequestMapping("/api/orders")
@@ -23,12 +26,12 @@ public class OrderController {
 	private IOrderService orderService;
 
 	@GetMapping("/")
-	public Page<OrderResponse> getOrders(Pageable pageable) {
-		return orderService.getOrders(pageable);
+	public  List<Order> getOrders() {
+		return orderService.getOrders();
 	}
 	
 	@GetMapping("/{orderId}")
-	public OrderResponse getOrder(@PathVariable("orderId") Long id) {
+	public Order getOrder(@PathVariable("orderId") Long id) {
 		return orderService.getOrderById(id);
 	}
 	
@@ -37,5 +40,12 @@ public class OrderController {
 		orderService.deleteOrderById(id);
 		
 		return "Successfully delete order id - " + id;
+	}
+	
+	
+	@PostMapping("/")
+	public Order createOrder(@RequestBody Order order) {
+		
+		return orderService.createOrder(order);
 	}
 }

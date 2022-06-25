@@ -1,10 +1,12 @@
 package com.jpendon.WarehouseRestAPI.domain.order.model;
 
-import java.sql.Timestamp;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -13,25 +15,29 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.jpendon.WarehouseRestAPI.domain.user.model.User;
 
 @Entity
 @Table(name="orders")
-public class Order {
-
+public class Order {	
+    private static final long serialVersionUID = 1L;
+    
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="id")
+	@SequenceGenerator(name="order_id", sequenceName = "order_id", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "order_id")	
+    @Column(name = "order_id")
 	private Long orderId;
 	
-	@OneToOne(fetch = FetchType.LAZY, cascade=CascadeType.ALL, orphanRemoval=true)
+	@OneToOne(fetch = FetchType.EAGER, cascade=CascadeType.MERGE)
 	@JoinColumn(name="user_id", nullable=false)
 	private User user;
-		
-	@OneToMany(mappedBy="order", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
-	private List<OrderedProducts> orderedProducts; 
+	
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinColumn(name = "order_id")	
+	private Set<OrderedProducts> orderedProducts; 
 	
 	
 	public Order() {
@@ -42,7 +48,7 @@ public class Order {
 		this.user = user;
 	}
 
-	public Order(User user, List<OrderedProducts> orderedProducts) {
+	public Order(User user, Set<OrderedProducts> orderedProducts) {
 		this.user = user;
 		this.orderedProducts = orderedProducts;
 	}
@@ -71,11 +77,11 @@ public class Order {
 		this.orderId = orderId;
 	}
 
-	public List<OrderedProducts> getOrderedProducts() {
+	public Set<OrderedProducts> getOrderedProducts() {
 		return orderedProducts;
 	}
 
-	public void setOrderedProducts(List<OrderedProducts> orderedProducts) {
+	public void setOrderedProducts(Set<OrderedProducts> orderedProducts) {
 		this.orderedProducts = orderedProducts;
 	}
 

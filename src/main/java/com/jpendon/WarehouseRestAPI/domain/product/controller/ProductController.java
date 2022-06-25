@@ -69,10 +69,5 @@ public class ProductController {
 		
 		return "Successfully deleted product: " + product;
 	}
-	
-	@PostMapping("/sell")
-	public OrderResponse createOrder(@RequestBody ProductSaleRequest productSaleRequest) {
-		
-		return orderService.createOrder(productSaleRequest);
-	}
+
 }

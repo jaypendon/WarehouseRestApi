@@ -3,46 +3,59 @@ package com.jpendon.WarehouseRestAPI.domain.order.model;
 import java.util.List;
 
 import javax.persistence.Column;
+import javax.persistence.Embeddable;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.jpendon.WarehouseRestAPI.domain.product.model.Product;
 
 @Entity
 @Table(name="ordered_products")
-public class OrderedProducts {
-
+public class OrderedProducts {	
+    private static final long serialVersionUID = 1L;
+    
+	@Id
+	@SequenceGenerator(name="ordered_product_id", sequenceName = "ordered_product_id", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ordered_product_id")	
+    @Column(name = "ordered_product_id")
+	private Long id;
+	
+    
+//	@ManyToOne(fetch = FetchType.LAZY)
+//	private Order order; 
+	
 	@ManyToOne
 	@JoinColumn(name="product_id", nullable=false)
 	private Product product;
 	
-	@ManyToOne
-	@JoinColumn(name="order_id", nullable=false)
-	private Order order;
-	
 	@Column(name="ordered_amount", nullable=false)
-	private Long amountOrdered;
-	
-	@Id
-	@GeneratedValue
-	@Column(name="id", nullable=false)
-	private Long orderedProductId;
+	private Long amountOrdered;	
 	
 	public OrderedProducts() {
 		
 	}
 
-	public OrderedProducts(Product product, Order order, Long amountOrdered) {
+	public OrderedProducts(Order order, Product product, Long amountOrdered) {
+		//this.order = order;
 		this.product = product;
-		this.order = order;
 		this.amountOrdered = amountOrdered;
 	}
 
+	
+	public Long getId() {
+		return id;
+	}
 
+	public void setId(Long id) {
+		this.id = id;
+	}
 
 	public Product getProduct() {
 		return product;
@@ -52,30 +65,22 @@ public class OrderedProducts {
 		this.product = product;
 	}
 
-	public Order getOrder() {
-		return order;
-	}
+//	public Order getOrder() {
+//		return order;
+//	}
+//
+//	public void setOrder(Order order) {
+//		this.order = order;
+//	}
 
-	public void setOrder(Order order) {
-		this.order = order;
-	}
-
-	public Long getAmoundOrdered() {
+	public Long getAmountOrdered() {
 		return amountOrdered;
 	}
 
-	public void setAmoundOrdered(Long amountOrdered) {
+	public void setAmountOrdered(Long amountOrdered) {
 		this.amountOrdered = amountOrdered;
 	}
 
-	public Long getOrderedProductId() {
-		return orderedProductId;
-	}
-
-	public void setOrderedProductId(Long orderedProductId) {
-		this.orderedProductId = orderedProductId;
-	}
-	
 	
 }
 	

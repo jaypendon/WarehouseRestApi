@@ -11,12 +11,14 @@ import com.jpendon.WarehouseRestAPI.domain.product.dto.ProductSaleRequest;
 
 public interface IOrderService {
 	
-	Page<OrderResponse> getOrders(Pageable pageable);
+	List<Order> getOrders();
 			
-	OrderResponse getOrderById(Long id);
+	Order getOrderById(Long id);
 	
 	void deleteOrderById(Long id);
 	
-	OrderResponse createOrder(ProductSaleRequest productSaleRequest);
+	Order createOrder(Order order);
+
+	
 	
 }

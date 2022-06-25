@@ -2,20 +2,22 @@ package com.jpendon.WarehouseRestAPI.domain.order.service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.*;
 
 import com.jpendon.WarehouseRestAPI.domain.order.dto.OrderResponse;
 import com.jpendon.WarehouseRestAPI.domain.order.dto.OrderedProductsResponse;
 import com.jpendon.WarehouseRestAPI.domain.order.model.Order;
 import com.jpendon.WarehouseRestAPI.domain.order.model.OrderedProducts;
 import com.jpendon.WarehouseRestAPI.domain.order.repository.OrderRepository;
-import com.jpendon.WarehouseRestAPI.domain.order.repository.OrderedProductRepository;
 import com.jpendon.WarehouseRestAPI.domain.product.dto.ProductRequested;
 import com.jpendon.WarehouseRestAPI.domain.product.dto.ProductResponse;
 import com.jpendon.WarehouseRestAPI.domain.product.dto.ProductSaleRequest;
@@ -31,39 +33,21 @@ public class OrderService implements IOrderService {
 	private OrderRepository orderRepository;
 	
 	@Autowired
-	private OrderedProductRepository orderedProductRepository;
-	
-	@Autowired
 	private UserRepository userRepository; 
 	
 	@Autowired
 	private ProductRepository productRepository;
 	
 	@Override
-	public Page<OrderResponse> getOrders(Pageable pageable) {
+	public List<Order> getOrders() {
 			
-		Page<Order> page =   orderRepository.findAll(pageable);	
-		
-		return page.map(order -> new OrderResponse(
-				order.getId(), 
-				OrderService.mapResponseForOrder(order), 
-				new UserResponse(
-						order.getUser().getId(), 
-						order.getUser().getFirstName(),
-						order.getUser().getLastName(), 
-						order.getUser().getAddress(), 
-						order.getUser().getEmail()
-						),
-				OrderService.mapResponseForOrderedProducts(order)
-				));
+		return (List<Order>) orderRepository.findAll();	
 	}
 	
 	
 	@Override
-	public OrderResponse getOrderById(Long id) {
-		Order order = orderRepository.findById(id).get();
-		
-		return createOrderResponse(order);
+	public Order getOrderById(Long id) {
+		return orderRepository.findById(id).get();		
 	}
 	
 	@Override
@@ -72,26 +56,10 @@ public class OrderService implements IOrderService {
 	}
 	
 	@Override
-	public OrderResponse createOrder(ProductSaleRequest productSaleRequest) {
-		User user = userRepository.findById(productSaleRequest.userId()).get();
+	public Order createOrder(Order order) {
+		orderRepository.save(order);
 		
-		Order order = new Order(user);
-		
-		List<OrderedProducts> orderedProducts = new ArrayList<OrderedProducts>();
-		
-		for (ProductRequested productRequested : productSaleRequest.productsRequested()) {
-			orderedProducts.add( new OrderedProducts (
-					productRepository.findById(productRequested.productId()).get(),
-					order, 
-					productRequested.amountRequested()					
-					));
-		}
-		
-		order.setOrderedProducts(orderedProducts);		
-		orderRepository.save(order);		
-		orderedProductRepository.saveAll(orderedProducts);
-		
-		return createOrderResponse(order);
+		return order;
 	}
 	
 	
@@ -107,9 +75,7 @@ public class OrderService implements IOrderService {
 						order.getUser().getAddress(), 
 						order.getUser().getEmail()
 						),				
-				OrderService.mapResponseForOrderedProducts(order)
-						
-					
+				OrderService.mapResponseForOrderedProducts(order)					
 				);
 	} 
 	
@@ -119,8 +85,7 @@ public class OrderService implements IOrderService {
 		
 		for (OrderedProducts orderedProduct : order.getOrderedProducts()) {
 			orderedProductsResponse.add(new OrderedProductsResponse (
-					orderedProduct.getOrderedProductId(),
-					orderedProduct.getAmoundOrdered()
+					orderedProduct.getAmountOrdered()
 					));	
 		}
 		
