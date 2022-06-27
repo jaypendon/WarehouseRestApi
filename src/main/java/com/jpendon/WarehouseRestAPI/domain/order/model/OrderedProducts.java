@@ -27,10 +27,6 @@ public class OrderedProducts {
     @Column(name = "ordered_product_id")
 	private Long id;
 	
-    
-//	@ManyToOne(fetch = FetchType.LAZY)
-//	private Order order; 
-	
 	@ManyToOne
 	@JoinColumn(name="product_id", nullable=false)
 	private Product product;
@@ -43,7 +39,6 @@ public class OrderedProducts {
 	}
 
 	public OrderedProducts(Order order, Product product, Long amountOrdered) {
-		//this.order = order;
 		this.product = product;
 		this.amountOrdered = amountOrdered;
 	}
@@ -65,13 +60,6 @@ public class OrderedProducts {
 		this.product = product;
 	}
 
-//	public Order getOrder() {
-//		return order;
-//	}
-//
-//	public void setOrder(Order order) {
-//		this.order = order;
-//	}
 
 	public Long getAmountOrdered() {
 		return amountOrdered;

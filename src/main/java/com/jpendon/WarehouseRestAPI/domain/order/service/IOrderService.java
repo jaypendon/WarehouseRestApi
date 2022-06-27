@@ -17,7 +17,7 @@ public interface IOrderService {
 	
 	void deleteOrderById(Long id);
 	
-	Order createOrder(Order order);
+	Order save(Order order);
 
 	
 	

@@ -9,14 +9,13 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.jpendon.WarehouseRestAPI.domain.order.dto.OrderResponse;
 import com.jpendon.WarehouseRestAPI.domain.order.model.Order;
 import com.jpendon.WarehouseRestAPI.domain.order.service.IOrderService;
-import com.jpendon.WarehouseRestAPI.domain.product.dto.ProductSaleRequest;
 
 @RestController
 @RequestMapping("/api/orders")
@@ -33,7 +32,7 @@ public class OrderController {
 	@GetMapping("/{orderId}")
 	public Order getOrder(@PathVariable("orderId") Long id) {
 		return orderService.getOrderById(id);
-	}
+	} 
 	
 	@DeleteMapping("/{orderId}")
 	public String deleteOrderById(@PathVariable("orderId") Long id) {
@@ -42,10 +41,14 @@ public class OrderController {
 		return "Successfully delete order id - " + id;
 	}
 	
-	
 	@PostMapping("/")
 	public Order createOrder(@RequestBody Order order) {
 		
-		return orderService.createOrder(order);
+		return orderService.save(order);
+	}
+	
+	@PutMapping("/")
+	public Order updateOrder(@RequestBody Order order) {
+		return orderService.save(order);
 	}
 }
